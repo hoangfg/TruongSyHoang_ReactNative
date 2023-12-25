@@ -11,7 +11,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { COLOURS, Items } from '../api/Database';
+import { COLOURS, Items } from '../assets/JS/COLOURS';
 import { clearCart, getAll, removeFromCart, updateQuantity } from '../action/CartSlice';
 
 import Item from './cart/item';
