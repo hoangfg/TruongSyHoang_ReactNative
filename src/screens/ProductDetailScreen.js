@@ -50,7 +50,7 @@ const Details = ({ route }) => {
         <View style={style.imageContainer} >
 
             <Image
-                source={{ uri: product.image }}
+                source={{ uri: product.images[0] }}
                 style={{ flex: 1, aspectRatio: 16 / 9, borderRadius: 8, resizeMode: 'contain' }}
             />
 

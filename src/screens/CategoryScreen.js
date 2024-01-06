@@ -1,11 +1,49 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, ScrollView, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import ListType from '../../../components/ListType';
-import { ImageBackground } from 'react-native';
 
-const ListProduct = ({ data }) => {
+import { ImageBackground } from 'react-native';
+import { category, categorySinge, listProductWithCategory } from '../api/Api';
+import { fetchProductById } from './../api/Api';
+import ListType from '../components/ListType';
+
+const CategoryProducts = ({ route }) => {
+    const { categoryId } = route.params;
+
+    const [products, setProducts] = useState([]);
+    const [category, setCategory] = useState({})
+    const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const data = await listProductWithCategory(categoryId);
+
+                setTimeout(() => {
+                    setProducts(data);
+                    setLoading(false);
+                }, 200);
+            } catch (error) {
+                console.error("Fetch error:", error);
+                setLoading(false);
+            }
+        };
+        const fetchCategory = async () => {
+            try {
+                const data = await categorySinge(categoryId);
+                console.log(data)
+                setTimeout(() => {
+                    setCategory(data);
+                    setLoading(false);
+                }, 200);
+            } catch (error) {
+                console.error("Fetch error:", error);
+                setLoading(false);
+            }
+        }
+        fetchProducts();
+        fetchCategory();
+    }, [categoryId]);
 
     const renderProductItem = ({ item }) => {
 
@@ -49,17 +87,20 @@ const ListProduct = ({ data }) => {
 
     return (
         <View style={styles.container}>
-            <ListType title="Featured Product" />
+            <ListType title={category.name} type="category" />
             <ScrollView
-                horizontal
-            // showsHorizontalScrollIndicator={false}
-            // contentContainerStyle={styles.rowContainer}
+                contentContainerStyle={styles.container}
+                horizontal={false}
+                showsVerticalScrollIndicator={false}
             >
-                {data?.map((item) => (
-                    <View key={item.id} style={styles.productItemWrapper}>
-                        {renderProductItem({ item })}
-                    </View>
-                ))}
+                <View style={styles.rowContainer}>
+                    {products.map((item) => (
+                        <View key={item.id} style={styles.productItemWrapper}>
+
+                            {renderProductItem({ item })}
+                        </View>
+                    ))}
+                </View>
             </ScrollView>
         </View>
     );
@@ -67,16 +108,26 @@ const ListProduct = ({ data }) => {
 
 const styles = StyleSheet.create({
     container: {
-        height: 350,
-        marginTop: 50,
-        marginBottom: 20,
+        backgroundColor: "#fff",
+        marginBottom: 30
     },
     rowContainer: {
         flexDirection: 'row',
-        padding: 10,
+        justifyContent: 'space-evenly',
+        flexWrap: 'wrap',
+        paddingHorizontal: 16,
     },
     productItemWrapper: {
-        marginRight: 10,
+        width: '48%',
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 5,
     },
     productItem: {
         width: 170,
@@ -129,4 +180,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ListProduct;
+export default CategoryProducts;

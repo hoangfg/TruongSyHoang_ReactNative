@@ -1,14 +1,25 @@
 import React from 'react';
-import { View, Image, ScrollView, StyleSheet, Text } from 'react-native';
+import { View, Image, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import ListType from '../../../components/ListType';
+import { useNavigation } from '@react-navigation/native';
 
 const ListCategory = ({ data }) => {
+    const navigation = useNavigation();
+
     const renderCategoryItem = ({ item }) => {
+        console.log(item.name)
         return (
-            <View style={styles.categoryItem}>
-                <Image source={item.image} style={styles.image} />
-                <Text style={styles.categoryTitle}>{item.title}</Text>
-            </View>
+            <TouchableOpacity
+
+                onPress={() => {
+                    navigation.navigate('CategoryProducts', { categoryId: item.id });
+                }}
+            >
+                <View >
+                    <Image source={{ uri: item.image }} style={styles.image} />
+                    <Text style={styles.categoryTitle}>{item.name}</Text>
+                </View>
+            </TouchableOpacity>
         );
     };
 

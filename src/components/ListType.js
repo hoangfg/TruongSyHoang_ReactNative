@@ -1,19 +1,17 @@
 import React from "react";
 import { Text, View, StyleSheet } from "react-native";
 
-type ListTypeProps = {
-    title: string;
-};
-
-const ListType = ({ title }: ListTypeProps) => {
+const ListType = ({ title, type }) => {
     return (
         <View style={styles.container}>
             <View>
                 <Text style={styles.title}>{title}</Text>
             </View>
-            <View>
-                <Text>Xem tất cả</Text>
-            </View>
+            {type !== "category" && (
+                <View>
+                    <Text>Xem tất cả</Text>
+                </View>
+            )}
         </View>
     );
 };
@@ -23,8 +21,8 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         padding: 10,
-        borderBottomWidth: 1, // Thêm border bottom
-        borderBottomColor: "gray", // Màu của border bottom
+        borderBottomWidth: 1,
+        borderBottomColor: "gray",
     },
     title: {
         color: "red",

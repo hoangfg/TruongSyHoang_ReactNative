@@ -4,22 +4,15 @@ const addToCart = async (productId, quantity, price) => {
     try {
         const existingCart = await AsyncStorage.getItem('carts');
         let cart = existingCart ? JSON.parse(existingCart) : [];
-
-
         const existingItemIndex = cart.findIndex(item => item.productId === productId);
-        console.log(existingItemIndex)
-
+        // console.log(existingItemIndex)
         if (existingItemIndex !== -1) {
-
             cart[existingItemIndex].quantity += quantity;
         } else {
-
             cart.push({ productId, quantity, price });
         }
-
         await AsyncStorage.setItem('carts', JSON.stringify(cart));
-
-        console.log('Item added to cart:', { productId, quantity, price });
+        // console.log('Item added to cart:', { productId, quantity, price });
     } catch (error) {
         console.error('Error adding item to cart:', error);
     }
@@ -28,9 +21,7 @@ const updateQuantity = async (productId, newQuantity, callback) => {
     try {
         const existingCart = await AsyncStorage.getItem('carts');
         let cart = existingCart ? JSON.parse(existingCart) : [];
-
         const existingItemIndex = cart.findIndex(item => item.productId === productId);
-
         if (existingItemIndex !== -1) {
             cart[existingItemIndex].quantity = newQuantity;
             await AsyncStorage.setItem('carts', JSON.stringify(cart));

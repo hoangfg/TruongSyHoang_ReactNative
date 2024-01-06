@@ -44,7 +44,7 @@ const Item = ({ item, onDelete, onMinus, onPlus }) => {
                 marginRight: 22,
             }}>
             <Image
-                source={{ uri: data.image }}
+                source={{ uri: data.images[0] }}
                 style={{
                     width: '100%',
                     height: '100%',

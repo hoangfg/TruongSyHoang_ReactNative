@@ -9,6 +9,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Details from '../screens/ProductDetailScreen';
 
 import CartUI from '../screens/CartScreen';
+import CategoryProducts from '../screens/CategoryScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -17,6 +18,7 @@ const HomeStack = () => {
         <Stack.Navigator initialRouteName="Home" screenOptions={{ headerShown: false }}>
             <Stack.Screen name="HomeStack" component={HomeScreen} />
             <Stack.Screen name="Details" component={Details} />
+            <Stack.Screen name="CategoryProducts" component={CategoryProducts} />
         </Stack.Navigator>
     );
 };
