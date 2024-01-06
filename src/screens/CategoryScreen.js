@@ -87,7 +87,7 @@ const CategoryProducts = ({ route }) => {
 
     return (
         <View style={styles.container}>
-            <ListType title={category.name} type="category" />
+            <ListType title={category.name} type="hiden" />
             <ScrollView
                 contentContainerStyle={styles.container}
                 horizontal={false}

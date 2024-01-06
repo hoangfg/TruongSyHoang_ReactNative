@@ -10,6 +10,7 @@ import Details from '../screens/ProductDetailScreen';
 
 import CartUI from '../screens/CartScreen';
 import CategoryProducts from '../screens/CategoryScreen';
+import ProductList from '../screens/ProductsScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -19,6 +20,7 @@ const HomeStack = () => {
             <Stack.Screen name="HomeStack" component={HomeScreen} />
             <Stack.Screen name="Details" component={Details} />
             <Stack.Screen name="CategoryProducts" component={CategoryProducts} />
+            <Stack.Screen name="ProductList" component={ProductList} />
         </Stack.Navigator>
     );
 };

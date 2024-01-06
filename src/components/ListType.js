@@ -1,21 +1,24 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 
-const ListType = ({ title, type }) => {
+
+
+const ListType = ({ title, type, onPress }) => {
     return (
         <View style={styles.container}>
             <View>
                 <Text style={styles.title}>{title}</Text>
             </View>
-            {type !== "category" && (
-                <View>
-                    <Text>Xem tất cả</Text>
-                </View>
+            {type !== "hiden" && (
+                <TouchableOpacity onPress={onPress}>
+                    <View>
+                        <Text>Xem tất cả</Text>
+                    </View>
+                </TouchableOpacity>
             )}
         </View>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         flexDirection: "row",

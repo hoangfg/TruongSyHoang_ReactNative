@@ -17,6 +17,21 @@ export const fetchProductById = async (productId) => {
     throw error;
   }
 };
+export const fetchProductByTitle = async (title) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/products/?title=${title}`);
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Fetch error:", error);
+    throw error;
+  }
+};
 export const listCategory = async () => {
   try {
     const response = await fetch(`${API_BASE_URL}/categories`);

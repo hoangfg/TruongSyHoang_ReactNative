@@ -1,14 +1,41 @@
-import React from 'react';
-import { View, ScrollView, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { View, ScrollView, StyleSheet, Text, TouchableOpacity, Image, TouchableHighlight } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import ListType from '../../../components/ListType';
-import { ImageBackground } from 'react-native';
 
-const ListProduct = ({ data }) => {
+import { ImageBackground } from 'react-native';
+import { category, categorySinge, listProductWithCategory } from '../api/Api';
+import { fetchProductById } from './../api/Api';
+import ListType from '../components/ListType';
+
+const ProductList = () => {
+
+
+    const [products, setProducts] = useState([]);
+    const [offset, setOffset] = useState(0);
+    const limit = 10;
+
+    const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
-    const navigateToProductList = () => {
-        navigation.navigate('ProductList');
+    const getProducts = async (newOffset) => {
+        try {
+            const response = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${newOffset}&limit=${limit}`);
+            const data = await response.json();
+            setProducts((prevProducts) => [...prevProducts, ...data]); // Concatenate new data with existing products
+            setOffset(newOffset); // Update offset for the next page
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     };
+
+    useEffect(() => {
+        getProducts(offset);
+    }, []);
+
+    const loadMore = () => {
+        const newOffset = offset + limit;
+        getProducts(newOffset);
+    };
+
     const renderProductItem = ({ item }) => {
 
         return (
@@ -51,17 +78,22 @@ const ListProduct = ({ data }) => {
 
     return (
         <View style={styles.container}>
-            <ListType title="Featured Product" onPress={navigateToProductList} />
+            <ListType title="Tất cả sản phẩm" type="hiden" />
             <ScrollView
-                horizontal
-            // showsHorizontalScrollIndicator={false}
-            // contentContainerStyle={styles.rowContainer}
+                contentContainerStyle={styles.container}
+                horizontal={false}
+                showsVerticalScrollIndicator={false}
             >
-                {data?.map((item) => (
-                    <View key={item.id} style={styles.productItemWrapper}>
-                        {renderProductItem({ item })}
-                    </View>
-                ))}
+                <View style={styles.rowContainer}>
+                    {products.map((item, index) => (
+                        <View key={`${item.id}-${item.name}`} style={styles.productItemWrapper}>
+                            {renderProductItem({ item })}
+                        </View>
+                    ))}
+                </View>
+                <TouchableHighlight onPress={loadMore} style={styles.loadMoreButton}>
+                    <Text style={styles.loadMoreButtonText}>Load More</Text>
+                </TouchableHighlight>
             </ScrollView>
         </View>
     );
@@ -69,16 +101,26 @@ const ListProduct = ({ data }) => {
 
 const styles = StyleSheet.create({
     container: {
-        height: 350,
-        marginTop: 50,
-        marginBottom: 20,
+        backgroundColor: "#fff",
+        marginBottom: 50
     },
     rowContainer: {
         flexDirection: 'row',
-        padding: 10,
+        justifyContent: 'space-evenly',
+        flexWrap: 'wrap',
+        paddingHorizontal: 16,
     },
     productItemWrapper: {
-        marginRight: 10,
+        width: '48%',
+        marginBottom: 16,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.2,
+        shadowRadius: 2,
+        elevation: 5,
     },
     productItem: {
         width: 170,
@@ -129,6 +171,17 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold',
     },
+    loadMoreButton: {
+        backgroundColor: 'gray',
+        paddingVertical: 12,
+        borderRadius: 8,
+        marginTop: 20,
+        alignItems: 'center',
+    },
+    loadMoreButtonText: {
+        color: 'white',
+        fontWeight: 'bold',
+    },
 });
 
-export default ListProduct;
+export default ProductList;
