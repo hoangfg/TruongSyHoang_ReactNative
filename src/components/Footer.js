@@ -11,6 +11,9 @@ import Details from '../screens/ProductDetailScreen';
 import CartUI from '../screens/CartScreen';
 import CategoryProducts from '../screens/CategoryScreen';
 import ProductList from '../screens/ProductsScreen';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import SearchScreen from './../screens/SearchScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -21,6 +24,8 @@ const HomeStack = () => {
             <Stack.Screen name="Details" component={Details} />
             <Stack.Screen name="CategoryProducts" component={CategoryProducts} />
             <Stack.Screen name="ProductList" component={ProductList} />
+            <Stack.Screen name="LoginScreen" component={LoginScreen} />
+            <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
         </Stack.Navigator>
     );
 };
@@ -40,14 +45,15 @@ const Footer = () => {
                 }}
             />
             <Tab.Screen
-                name="Account"
-                component={Account}
+                name="More"
+                component={More}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="person-outline" color={color} size={size} />
+                        <Ionicons name="apps-outline" color={color} size={size} />
                     ),
                 }}
             />
+           
             {/* <Tab.Screen
                 name="Cart"
                 component={CartScreen}
@@ -58,6 +64,15 @@ const Footer = () => {
                 }}
             /> */}
             <Tab.Screen
+                name="Search"
+                component={SearchScreen}
+                options={{
+                    tabBarIcon: ({ color, size }) => (
+                        <Ionicons name="search-outline" color={color} size={size} />
+                    ),
+                }}
+            />
+            <Tab.Screen
                 name="Cart"
                 component={CartUI}
                 options={{
@@ -67,11 +82,11 @@ const Footer = () => {
                 }}
             />
             <Tab.Screen
-                name="More"
-                component={More}
+                name="Account"
+                component={Account}
                 options={{
                     tabBarIcon: ({ color, size }) => (
-                        <Ionicons name="apps-outline" color={color} size={size} />
+                        <Ionicons name="person-outline" color={color} size={size} />
                     ),
                 }}
             />

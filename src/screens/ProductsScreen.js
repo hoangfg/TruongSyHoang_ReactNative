@@ -7,29 +7,56 @@ import { category, categorySinge, listProductWithCategory } from '../api/Api';
 import { fetchProductById } from './../api/Api';
 import ListType from '../components/ListType';
 
-const ProductList = () => {
+const ProductList = ({ route }) => {
 
 
     const [products, setProducts] = useState([]);
     const [offset, setOffset] = useState(0);
     const limit = 10;
+    const { search } = route.params || { search: '' };
+    const [title, setTitle] = useState("Tất cả sản phẩm");
 
-    const [loading, setLoading] = useState(true);
-    const navigation = useNavigation();
-    const getProducts = async (newOffset) => {
-        try {
-            const response = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${newOffset}&limit=${limit}`);
-            const data = await response.json();
-            setProducts((prevProducts) => [...prevProducts, ...data]); // Concatenate new data with existing products
-            setOffset(newOffset); // Update offset for the next page
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
 
     useEffect(() => {
-        getProducts(offset);
-    }, []);
+        if (search) {
+            setTitle(`Kết quả tìm kiếm cho "${search}"`);
+        } else {
+            setTitle("Tất cả sản phẩm");
+        }
+    }, [search]);
+    const [loading, setLoading] = useState(true);
+    const navigation = useNavigation();
+    // const getProducts = async (newOffset) => {
+    //     try {
+    //         const response = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${newOffset}&limit=${limit}`);
+    //         const data = await response.json();
+    //         setProducts((prevProducts) => [...prevProducts, ...data]);
+    //         setOffset(newOffset);
+    //     } catch (error) {
+    //         console.error('Error fetching data:', error);
+    //     }
+    // };
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                if (search) {
+                    const response = await fetch(`https://api.escuelajs.co/api/v1/products/?title=${search}`);
+                    const data = await response.json();
+                    setProducts(data);
+                } else {
+                    const response = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=${limit}`);
+                    const data = await response.json();
+                    setProducts((prevProducts) => [...prevProducts, ...data]);
+                    setOffset(offset + limit);
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, [search]);
 
     const loadMore = () => {
         const newOffset = offset + limit;
@@ -45,7 +72,7 @@ const ProductList = () => {
                     navigation.navigate('Details', { productId: item.id });
                 }}
             >
-                {/* <Image source={item.image} style={styles.productImage} /> */}
+
                 <ImageBackground
                     source={{ uri: item.images[0] }}
                     style={styles.productImage}
@@ -78,7 +105,7 @@ const ProductList = () => {
 
     return (
         <View style={styles.container}>
-            <ListType title="Tất cả sản phẩm" type="hiden" />
+            <ListType title={`${title}`} type="hiden" />
             <ScrollView
                 contentContainerStyle={styles.container}
                 horizontal={false}
@@ -91,9 +118,11 @@ const ProductList = () => {
                         </View>
                     ))}
                 </View>
-                <TouchableHighlight onPress={loadMore} style={styles.loadMoreButton}>
-                    <Text style={styles.loadMoreButtonText}>Load More</Text>
-                </TouchableHighlight>
+                {search === '' && (
+                    <TouchableHighlight onPress={loadMore} style={styles.loadMoreButton}>
+                        <Text style={styles.loadMoreButtonText}>Load More</Text>
+                    </TouchableHighlight>
+                )}
             </ScrollView>
         </View>
     );
