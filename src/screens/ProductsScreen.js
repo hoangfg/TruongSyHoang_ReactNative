@@ -6,6 +6,8 @@ import { ImageBackground } from 'react-native';
 import { category, categorySinge, listProductWithCategory } from '../api/Api';
 import { fetchProductById } from './../api/Api';
 import ListType from '../components/ListType';
+import { addToCart } from '../action/CartSlice';
+import Toast from 'react-native-toast-message';
 
 const ProductList = ({ route }) => {
 
@@ -36,7 +38,20 @@ const ProductList = ({ route }) => {
     //         console.error('Error fetching data:', error);
     //     }
     // };
+    const handleAddToCart = async (productId, quantity, price) => {
+        try {
+            await addToCart(productId, quantity, price);
+            Toast.show({
+                type: 'success',
+                text1: 'ADD TO CART SUCCESS',
+                visibilityTime: 5000,
+                autoHide: true,
+            });
 
+        } catch (error) {
+            console.error('Error adding item to cart:', error);
+        }
+    };
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -92,10 +107,7 @@ const ProductList = ({ route }) => {
                 </View>
                 <TouchableOpacity
                     style={styles.addToCartButton}
-                    onPress={() => {
-                        console.log(`Thêm vào giỏ hàng: ${item.title}`);
-                        // Thực hiện hành động thêm vào giỏ hàng ở đây
-                    }}
+                    onPress={() => handleAddToCart(item.id, 1, item.price)}
                 >
                     <Text style={styles.addToCartButtonText}>Thêm vào giỏ hàng</Text>
                 </TouchableOpacity>

@@ -11,7 +11,7 @@ export default function RegisterScreen({ navigation }) {
     return (
         <View style={styles.container}>
             <Text>
-                <Title style={styles.titleText}>Sign In!</Title>
+                <Title style={styles.titleText}>Đăng ký!</Title>
             </Text>
             <FormInput
                 labelName='Username'
@@ -32,7 +32,7 @@ export default function RegisterScreen({ navigation }) {
                 onChangeText={(userPassword) => setPassword(userPassword)}
             />
             <FormButton
-                title='Sign In'
+                title='Đăng ký'
                 modeValue='contained'
                 labelStyle={styles.loginButtonLabel}
                 onPress={() => {
@@ -40,7 +40,7 @@ export default function RegisterScreen({ navigation }) {
                 }}
             />
             <FormButton
-                title='Sign up here'
+                title='Đăng nhập'
                 modeValue='text'
                 uppercase={false}
                 labelStyle={styles.navButtonText}

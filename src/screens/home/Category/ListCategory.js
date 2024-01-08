@@ -28,7 +28,7 @@ const ListCategory = ({ data }) => {
 
     return (
         <View style={styles.container}>
-            <ListType title="Category" />
+            <ListType title="Danh mục" />
             <ScrollView
                 horizontal
                 showsHorizontalScrollIndicator={false}

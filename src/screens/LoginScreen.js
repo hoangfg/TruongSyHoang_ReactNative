@@ -11,7 +11,7 @@ export default function LoginScreen({ navigation }) {
     return (
         <View style={styles.container}>
             <Text>
-                <Title style={styles.titleText}>Login!</Title>
+                <Title style={styles.titleText}>Đăng nhập!</Title>
             </Text>
             <FormInput
                 labelName='Email'
@@ -26,7 +26,7 @@ export default function LoginScreen({ navigation }) {
                 onChangeText={(userPassword) => setPassword(userPassword)}
             />
             <FormButton
-                title='Login'
+                title='Đăng nhập'
                 modeValue='contained'
                 labelStyle={styles.loginButtonLabel}
                 onPress={() => {
@@ -34,7 +34,7 @@ export default function LoginScreen({ navigation }) {
                 }}
             />
             <FormButton
-                title='Sign up here'
+                title='Đăng ký'
                 modeValue='text'
                 uppercase={false}
                 labelStyle={styles.navButtonText}

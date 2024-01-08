@@ -3,11 +3,27 @@ import { View, ScrollView, StyleSheet, Text, TouchableOpacity, Image } from 'rea
 import { useNavigation } from '@react-navigation/native';
 import ListType from '../../../components/ListType';
 import { ImageBackground } from 'react-native';
+import { addToCart } from '../../../action/CartSlice';
+import Toast from 'react-native-toast-message';
 
 const ListProduct = ({ data }) => {
     const navigation = useNavigation();
     const navigateToProductList = () => {
         navigation.navigate('ProductList');
+    };
+    const handleAddToCart = async (productId, quantity, price) => {
+        try {
+            await addToCart(productId, quantity, price);
+            Toast.show({
+                type: 'success',
+                text1: 'ADD TO CART SUCCESS',
+                visibilityTime: 5000,
+                autoHide: true,
+            });
+
+        } catch (error) {
+            console.error('Error adding item to cart:', error);
+        }
     };
     const renderProductItem = ({ item }) => {
 
@@ -38,20 +54,29 @@ const ListProduct = ({ data }) => {
                 </View>
                 <TouchableOpacity
                     style={styles.addToCartButton}
-                    onPress={() => {
-                        console.log(`Thêm vào giỏ hàng: ${item.title}`);
-                        // Thực hiện hành động thêm vào giỏ hàng ở đây
-                    }}
+                    onPress={() => handleAddToCart(item.id, 1, item.price)}
                 >
                     <Text style={styles.addToCartButtonText}>Thêm vào giỏ hàng</Text>
                 </TouchableOpacity>
+                {/* <TouchableOpacity>
+                    <View style={style.buyBtn}>
+                        <Text
+                            style={{
+                                color: COLORS.white,
+                                fontSize: 18,
+                                fontWeight: 'bold',
+                            }}>
+                            ADD TO CART
+                        </Text>
+                    </View>
+                </TouchableOpacity> */}
             </TouchableOpacity>
         );
     };
 
     return (
         <View style={styles.container}>
-            <ListType title="Featured Product" onPress={navigateToProductList} />
+            <ListType title="Sản phẩm mới" onPress={navigateToProductList} />
             <ScrollView
                 horizontal
             // showsHorizontalScrollIndicator={false}
@@ -108,7 +133,7 @@ const styles = StyleSheet.create({
     productPrice: {
         fontSize: 16,
         fontWeight: 'bold',
-        color: 'green',
+        color: 'red',
         marginRight: 5,
     },
     productPriceSale: {
