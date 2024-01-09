@@ -8,6 +8,7 @@ import { fetchProductById } from './../api/Api';
 import ListType from '../components/ListType';
 import { addToCart } from '../action/CartSlice';
 import Toast from 'react-native-toast-message';
+import Loading from '../components/Loading';
 
 const ProductList = ({ route }) => {
 
@@ -28,16 +29,17 @@ const ProductList = ({ route }) => {
     }, [search]);
     const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
-    // const getProducts = async (newOffset) => {
-    //     try {
-    //         const response = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${newOffset}&limit=${limit}`);
-    //         const data = await response.json();
-    //         setProducts((prevProducts) => [...prevProducts, ...data]);
-    //         setOffset(newOffset);
-    //     } catch (error) {
-    //         console.error('Error fetching data:', error);
-    //     }
-    // };
+    const getProducts = async (newOffset) => {
+        try {
+            const response = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${newOffset}&limit=${limit}`);
+            const data = await response.json();
+            setProducts((prevProducts) => [...prevProducts, ...data]);
+            setLoading(false);
+            setOffset(newOffset);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
+    };
     const handleAddToCart = async (productId, quantity, price) => {
         try {
             await addToCart(productId, quantity, price);
@@ -55,7 +57,9 @@ const ProductList = ({ route }) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true); // Set loading to true when fetching data
                 if (search) {
+                    
                     const response = await fetch(`https://api.escuelajs.co/api/v1/products/?title=${search}`);
                     const data = await response.json();
                     setProducts(data);
@@ -63,21 +67,27 @@ const ProductList = ({ route }) => {
                     const response = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=${limit}`);
                     const data = await response.json();
                     setProducts((prevProducts) => [...prevProducts, ...data]);
-                    setOffset(offset + limit);
                 }
+                setLoading(false); // Set loading to false after fetching data
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
 
         fetchData();
-    }, [search]);
+    }, [search, offset]);
 
     const loadMore = () => {
         const newOffset = offset + limit;
         getProducts(newOffset);
     };
+    if (loading) {
+        return <Loading />
+    }
 
+    if (!products) {
+        return <Loading />
+    }
     const renderProductItem = ({ item }) => {
 
         return (

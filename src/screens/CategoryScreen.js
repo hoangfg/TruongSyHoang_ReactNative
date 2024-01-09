@@ -6,6 +6,7 @@ import { ImageBackground } from 'react-native';
 import { category, categorySinge, listProductWithCategory } from '../api/Api';
 import { fetchProductById } from './../api/Api';
 import ListType from '../components/ListType';
+import Loading from '../components/Loading';
 
 const CategoryProducts = ({ route }) => {
     const { categoryId } = route.params;
@@ -44,7 +45,13 @@ const CategoryProducts = ({ route }) => {
         fetchProducts();
         fetchCategory();
     }, [categoryId]);
+    if (loading) {
+        return <Loading />
+    }
 
+    if (!products) {
+        return <Loading />
+    }
     const renderProductItem = ({ item }) => {
 
         return (
