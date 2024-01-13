@@ -54,7 +54,6 @@ export default function SearchScreen({ navigation }) {
 
         setSearch((prevSearch) => {
 
-            console.log(prevSearch);
             navigation.navigate('ProductList', { search: selectedKeyword });
             return selectedKeyword;
         });

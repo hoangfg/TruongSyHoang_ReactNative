@@ -2,7 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const addToHistory = async (searchKeyword) => {
     try {
-        // Lấy danh sách tìm kiếm từ AsyncStorage
         const existingSearch = await AsyncStorage.getItem('searchs');
         let searchHistory = existingSearch ? JSON.parse(existingSearch) : [];
 
@@ -38,7 +37,7 @@ const getAll = async () => {
         const searchData = await AsyncStorage.getItem('searchs');
         return searchData ? JSON.parse(searchData) : [];
     } catch (error) {
-        console.error('Error getting cart data:', error);
+        console.error('Lỗi khi truy vấn lịch sử tìm kiếm:', error);
         return [];
     }
 };

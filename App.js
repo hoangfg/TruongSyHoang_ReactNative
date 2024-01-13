@@ -8,19 +8,23 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Provider } from 'react-redux';
 import store from './src/state/store';
 import Toast from 'react-native-toast-message';
+import { useEffect } from 'react';
 
+import PushNotification from 'react-native-push-notification';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AuthProvider } from './src/utils/AuthProvider';
 export default function App() {
   // Ẩn thanh trạng thái
   StatusBar.setHidden(true);
 
 
   return (
-    <Provider store={store}>
+    <AuthProvider>
       <NavigationContainer>
         <Toast ref={(ref) => Toast.setRef(ref)} />
         <Footer />
       </NavigationContainer>
-    </Provider>
+    </AuthProvider>
 
   );
 }
