@@ -14,6 +14,7 @@ import ProductList from '../screens/ProductsScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 import SearchScreen from './../screens/SearchScreen';
+import ProfileScreen from './../screens/ProfileScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -26,6 +27,7 @@ const HomeStack = () => {
             <Stack.Screen name="ProductList" component={ProductList} />
             <Stack.Screen name="LoginScreen" component={LoginScreen} />
             <Stack.Screen name="RegisterScreen" component={RegisterScreen} />
+            <Stack.Screen name="ProfileScreen" component={ProfileScreen} />
         </Stack.Navigator>
     );
 };
@@ -53,7 +55,7 @@ const Footer = () => {
                     ),
                 }}
             />
-           
+
             {/* <Tab.Screen
                 name="Cart"
                 component={CartScreen}

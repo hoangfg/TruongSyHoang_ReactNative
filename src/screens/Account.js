@@ -13,13 +13,15 @@ import {
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import { useAuth } from '../utils/AuthProvider';
 import { useNavigation } from '@react-navigation/native';
+import AccountItem from './account/AccountItem';
+import ProfileScreen from './ProfileScreen';
 const SECTIONS = [
 
     {
-        header: 'Content',
+        header: 'Chức năng',
         items: [
-            { id: 'login', icon: 'log-in', label: 'Login', type: 'link' },
-            { id: 'logout', icon: 'log-out', label: 'Logout', type: 'link' },
+            { id: 'login', icon: 'log-in', label: 'Đăng nhập', type: 'link' },
+            { id: 'logout', icon: 'log-out', label: 'Đăng xuất', type: 'link' },
         ],
     },
 ];
@@ -36,18 +38,21 @@ export default function Account() {
 
             logout();
             setTimeout(() => {
-                navigation.navigate('HomeStack');
+                navigation.navigate('LoginScreen');
             }, 200);
 
         }
     };
+
     const [form, setForm] = useState({
         language: 'English',
         darkMode: true,
         wifi: false,
     });
     const { user } = useAuth();
-
+    const navigateToProfileScreen = () => {
+        navigation.navigate('ProfileScreen');
+    };
     return (
         <SafeAreaView style={{ backgroundColor: '#f6f6f6' }}>
             <ScrollView contentContainerStyle={styles.container}>
@@ -65,13 +70,12 @@ export default function Account() {
                     <Text style={styles.profileName}>{user?.name}</Text>
 
                     <Text style={styles.profileEmail}>{user?.email}</Text>
+                    <Text style={styles.profileEmail}>{user?.role}</Text>
 
                     <TouchableOpacity
-                        onPress={() => {
-                            // handle onPress
-                        }}>
+                        onPress={navigateToProfileScreen}>
                         <View style={styles.profileAction}>
-                            <Text style={styles.profileActionText}>Edit Profile</Text>
+                            <Text style={styles.profileActionText}>Sửa thông tin</Text>
 
                             <FeatherIcon color="#fff" name="edit" size={16} />
                         </View>
@@ -85,54 +89,21 @@ export default function Account() {
                             <Text style={styles.sectionHeaderText}>{header}</Text>
                         </View>
                         <View style={styles.sectionBody}>
-                            {items.map(({ id, label, icon, type, value }, index) => {
-
-                                return (
-                                    <View
-                                        key={id}
-                                        style={[
-                                            styles.rowWrapper,
-                                            index === 0 && { borderTopWidth: 0 },
-                                        ]}>
-                                        <TouchableOpacity
-                                            onPress={() => handleItemClick(id)}>
-                                            <View style={styles.row}>
-                                                <FeatherIcon
-                                                    color="#616161"
-                                                    name={icon}
-                                                    style={styles.rowIcon}
-                                                    size={22}
-                                                />
-
-                                                <Text style={styles.rowLabel}>{label}</Text>
-
-                                                <View style={styles.rowSpacer} />
-
-                                                {type === 'select' && (
-                                                    <Text style={styles.rowValue}>{user ? user.name : ''}</Text>
-                                                )}
-
-                                                {type === 'toggle' && (
-                                                    <Switch
-                                                        onChange={(val) => setForm({ ...form, [id]: val })}
-                                                        value={form[id]}
-                                                    />
-                                                )}
-
-                                                {(type === 'select' || type === 'link') && (
-                                                    <FeatherIcon
-                                                        color="#ababab"
-                                                        name="chevron-right"
-                                                        size={22}
-                                                    />
-                                                )}
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                );
-
-
-                            })}
+                            {items.map(({ id, label, icon, type, value }, index) => (
+                                <AccountItem
+                                    key={id}
+                                    id={id}
+                                    label={label}
+                                    icon={icon}
+                                    type={type}
+                                    value={value}
+                                    index={index}
+                                    onHandleItemClick={handleItemClick}
+                                    user={user}
+                                    form={form}
+                                    setForm={setForm}
+                                />
+                            ))}
                         </View>
                     </View>
                 ))}

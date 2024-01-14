@@ -115,7 +115,7 @@ const Details = ({ route }) => {
                 </View>
             </View>
             <View style={{ paddingHorizontal: 10, marginTop: 10 }}>
-                <Text style={{ fontSize: 20, fontWeight: 'bold' }}>About</Text>
+                <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Thông tin</Text>
                 <Text
                     style={{
                         color: 'grey',
@@ -134,7 +134,7 @@ const Details = ({ route }) => {
                                 fontSize: 18,
                                 fontWeight: 'bold',
                             }}>
-                            ADD TO CART
+                            Thêm vào giỏ hàng
                         </Text>
                     </View>
                 </TouchableOpacity>

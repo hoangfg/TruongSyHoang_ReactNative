@@ -183,7 +183,7 @@ const CartUI = ({ navigation }) => {
                             color: COLOURS.black,
                             fontWeight: '400',
                         }}>
-                        Order Details
+                        Chi tiết giỏ hàng
                     </Text>
                     <View></View>
                 </View>
@@ -197,7 +197,7 @@ const CartUI = ({ navigation }) => {
                         paddingLeft: 16,
                         marginBottom: 10,
                     }}>
-                    My Cart
+                    Giỏ hàng
                 </Text>
                 <View style={{ paddingHorizontal: 16, height: "80%", }}>
                     {product
@@ -243,7 +243,7 @@ const CartUI = ({ navigation }) => {
                             color: COLOURS.white,
                             textTransform: 'uppercase',
                         }}>
-                        CHECKOUT (${total} )
+                        Thanh toán (${total})
                     </Text>
                 </TouchableOpacity>
             </View>

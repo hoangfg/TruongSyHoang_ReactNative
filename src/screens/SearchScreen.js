@@ -70,17 +70,17 @@ export default function SearchScreen({ navigation }) {
                 onChangeText={(text) => setSearch(() => text)}
             />
             <FormButton
-                title='Search'
+                title='Tìm kiếm'
                 modeValue='contained'
                 onPress={handleSearch}
             />
 
-            {/* Render search history as a FlatList */}
+          
             <View style={styles.historyContainer}>
-                <Text style={styles.historyHeader}>Search History</Text>
+                <Text style={styles.historyHeader}>Lịch sử tìm kiếm</Text>
                 {searchHistory.map(renderHistoryItem)}
                 {searchHistory.length === 0 && (
-                    <Text style={styles.historyEmpty}>No search history</Text>
+                    <Text style={styles.historyEmpty}>Không có lịch sử tìm kiếm</Text>
                 )}
             </View>
         </View>

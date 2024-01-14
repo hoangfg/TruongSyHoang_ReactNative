@@ -45,11 +45,11 @@ const ListProduct = ({ data }) => {
                 <View style={styles.priceBox}>
                     {item.priceSale ? (
                         <>
-                            <Text style={styles.productPriceSale}>{item.priceSale} USD</Text>
-                            <Text style={styles.productPriceOriginal}>{item.price} USD</Text>
+                            <Text style={styles.productPriceSale}>${item.priceSale}</Text>
+                            <Text style={styles.productPriceOriginal}>${item.price}</Text>
                         </>
                     ) : (
-                        <Text style={styles.productPrice}>{item.price} USD</Text>
+                        <Text style={styles.productPrice}>${item.price}</Text>
                     )}
                 </View>
                 <TouchableOpacity
@@ -58,18 +58,7 @@ const ListProduct = ({ data }) => {
                 >
                     <Text style={styles.addToCartButtonText}>Thêm vào giỏ hàng</Text>
                 </TouchableOpacity>
-                {/* <TouchableOpacity>
-                    <View style={style.buyBtn}>
-                        <Text
-                            style={{
-                                color: COLORS.white,
-                                fontSize: 18,
-                                fontWeight: 'bold',
-                            }}>
-                            ADD TO CART
-                        </Text>
-                    </View>
-                </TouchableOpacity> */}
+
             </TouchableOpacity>
         );
     };

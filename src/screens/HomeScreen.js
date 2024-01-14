@@ -26,7 +26,7 @@ const HomeScreen = () => {
     const [categories, setCategories] = useState([]);
     const getProducts = async () => {
         try {
-            const response = await fetch('https://api.escuelajs.co/api/v1/products');
+            const response = await fetch('https://api.escuelajs.co/api/v1/products?offset=0&limit=10');
             const data = await response.json();
 
             setProducts(data);
