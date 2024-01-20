@@ -43,7 +43,7 @@ export default function LoginScreen({ navigation }) {
             // AsyncStorage.removeItem('access_token');
             await AsyncStorage.setItem('access_token', result.accessToken);
             const userProfile = await getUserProfile();
-            console.log("userProfile", userProfile)
+
             authLogin(userProfile);
             navigation.navigate('HomeStack');
 

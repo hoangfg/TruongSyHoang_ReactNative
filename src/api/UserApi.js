@@ -45,8 +45,11 @@ export const login = async (loginData) => {
 };
 
 export const register = async (registerData) => {
+    console.log("register", registerData)
     try {
         const response = await ApiBase.post("/auth/register", registerData);
+        console.log("reponse", response)
+        console.log("reponse 2", response.data)
         return response.data;
     } catch (error) {
         // Handle error
