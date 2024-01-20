@@ -8,15 +8,25 @@ import Toast from 'react-native-toast-message';
 import { getImage } from '../../../api/ImageApi';
 import ProductItem from './ProductItem';
 
-const ListProduct = ({ data }) => {
+const ListProduct = ({ data, categoryName }) => {
 
     const navigation = useNavigation();
     const navigateToProductList = () => {
         navigation.navigate('ProductList');
     };
+    const [title, setTitle] = useState("Sản phẩm mới");
+
+
+    useEffect(() => {
+
+
+        if (categoryName) {
+            setTitle(`${categoryName}`);
+        }
+    }, [categoryName]);
     return (
         <View style={styles.container}>
-            <ListType title="Sản phẩm mới" onPress={navigateToProductList} />
+            <ListType title={title} onPress={navigateToProductList} />
             <ScrollView horizontal>
                 {data?.map((item) => (
                     <View key={item.id} style={styles.productItemWrapper}>

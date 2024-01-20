@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { View, SafeAreaView, Image, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, ToastAndroid } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
@@ -11,6 +11,8 @@ import { fetchProductById } from '../api/Api';
 import { addToCart } from '../action/CartSlice';
 import { getBook } from '../api/ProductApi';
 import DetailImage from './detail/DetailImage';
+import ListProduct from './home/products/ListProduct';
+import { getPublishersBooks } from '../api/PublisherApi';
 
 
 
@@ -19,12 +21,10 @@ const Details = ({ route }) => {
     const [product, setProduct] = useState({});
     const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
-    const { productId } = route.params;
-
-
-
-
+    const [products, setProducts] = useState([]);
+    const { productId, category } = route.params;
     useEffect(() => {
+
         const fetchProduct = async () => {
             try {
 
@@ -36,11 +36,19 @@ const Details = ({ route }) => {
                 setLoading(false);
             }
         };
-
+        const fetchData = async () => {
+            try {
+                const data = await getPublishersBooks(category.id);
+                setProducts(data.content);
+                setLoading(false)
+            } catch (error) {
+                console.error('Error fetching books:', error);
+            }
+        };
         fetchProduct();
+        fetchData()
+    }, [productId, category]);
 
-    }, [productId]);
-    console.log(product)
     const renderHeader = () => (
         <SafeAreaView style={style.header} forceInset={{ bottom: 'never' }}>
             <Icon name="arrow-back" size={28} onPress={() => navigation.goBack()} />
@@ -127,10 +135,15 @@ const Details = ({ route }) => {
     if (!product) {
         return <Loading />
     }
+
+
+
     return (
         <View style={style.container}>
             {renderHeader()}
-            <ScrollView>
+            <ScrollView
+
+            >
                 <SafeAreaView
                     style={{
                         flex: 1,
@@ -144,6 +157,7 @@ const Details = ({ route }) => {
                         {renderDetailsContainer()}
                     </View>
                 </SafeAreaView>
+                <ListProduct data={products} categoryName={category.name} />
             </ScrollView>
         </View>
 

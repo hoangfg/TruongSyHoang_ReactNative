@@ -24,7 +24,7 @@ const ProductItem = ({ item }) => {
         <TouchableOpacity
             style={styles.productItem}
             onPress={() => {
-                navigation.navigate('Details', { productId: item.id });
+                navigation.navigate('Details', { productId: item.id, category: item.publisher });
             }}
         >
             <ProductImage items={item.images} />

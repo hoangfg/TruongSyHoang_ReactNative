@@ -20,7 +20,7 @@ const ProductList = ({ route }) => {
     const limit = 10;
     const { search } = route.params || { search: '' };
     const [title, setTitle] = useState("Tất cả sản phẩm");
-
+    
 
     useEffect(() => {
         if (search) {
