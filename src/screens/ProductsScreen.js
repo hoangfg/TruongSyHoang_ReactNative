@@ -9,11 +9,13 @@ import ListType from '../components/ListType';
 import { addToCart } from '../action/CartSlice';
 import Toast from 'react-native-toast-message';
 import Loading from '../components/Loading';
+import ProductItem from './home/products/ProductItem';
+import { getBooks, getBooksBySearch } from '../api/ProductApi';
 
 const ProductList = ({ route }) => {
 
 
-    const [products, setProducts] = useState([]);
+    const [books, setBooks] = useState([]);
     const [offset, setOffset] = useState(0);
     const limit = 10;
     const { search } = route.params || { search: '' };
@@ -29,102 +31,43 @@ const ProductList = ({ route }) => {
     }, [search]);
     const [loading, setLoading] = useState(true);
     const navigation = useNavigation();
-    const getProducts = async (newOffset) => {
-        try {
-            const response = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${newOffset}&limit=${limit}`);
-            const data = await response.json();
-            setProducts((prevProducts) => [...prevProducts, ...data]);
-            setLoading(false);
-            setOffset(newOffset);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-    const handleAddToCart = async (productId, quantity, price) => {
-        try {
-            await addToCart(productId, quantity, price);
-            Toast.show({
-                type: 'success',
-                text1: 'ADD TO CART SUCCESS',
-                visibilityTime: 5000,
-                autoHide: true,
-            });
-
-        } catch (error) {
-            console.error('Error adding item to cart:', error);
-        }
-    };
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setLoading(true); // Set loading to true when fetching data
-                if (search) {
-                    
-                    const response = await fetch(`https://api.escuelajs.co/api/v1/products/?title=${search}`);
-                    const data = await response.json();
-                    setProducts(data);
-                } else {
-                    const response = await fetch(`https://api.escuelajs.co/api/v1/products?offset=${offset}&limit=${limit}`);
-                    const data = await response.json();
-                    setProducts((prevProducts) => [...prevProducts, ...data]);
-                }
-                setLoading(false); // Set loading to false after fetching data
+                const data = await getBooks();
+                setBooks(data.content);
+                setLoading(false);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error('Error fetching books:', error);
             }
         };
+        const fetchDataSearch = async () => {
+            try {
+                const data = await getBooksBySearch(search);
+                setBooks(data.content);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching books:', error);
+            }
+        }
 
-        fetchData();
-    }, [search, offset]);
+        if (search) {
+            fetchDataSearch()
+        } else {
+            fetchData();
+        }
+    }, [search]);
 
-    const loadMore = () => {
-        const newOffset = offset + limit;
-        getProducts(newOffset);
-    };
+
+
+
     if (loading) {
         return <Loading />
     }
 
-    if (!products) {
+    if (!books) {
         return <Loading />
     }
-    const renderProductItem = ({ item }) => {
-
-        return (
-            <TouchableOpacity
-                style={styles.productItem}
-                onPress={() => {
-                    navigation.navigate('Details', { productId: item.id });
-                }}
-            >
-
-                <ImageBackground
-                    source={{ uri: item.images[0] }}
-                    style={styles.productImage}
-                >
-
-                </ImageBackground>
-                <Text style={styles.productTitle}>{item.title}</Text>
-                <View style={styles.priceBox}>
-                    {item.priceSale ? (
-                        <>
-                            <Text style={styles.productPriceSale}>{item.priceSale} USD</Text>
-                            <Text style={styles.productPriceOriginal}>{item.price} USD</Text>
-                        </>
-                    ) : (
-                        <Text style={styles.productPrice}>{item.price} USD</Text>
-                    )}
-                </View>
-                <TouchableOpacity
-                    style={styles.addToCartButton}
-                    onPress={() => handleAddToCart(item.id, 1, item.price)}
-                >
-                    <Text style={styles.addToCartButtonText}>Thêm vào giỏ hàng</Text>
-                </TouchableOpacity>
-            </TouchableOpacity>
-        );
-    };
-
     return (
         <View style={styles.container}>
             <ListType title={`${title}`} type="hiden" />
@@ -134,17 +77,14 @@ const ProductList = ({ route }) => {
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.rowContainer}>
-                    {products.map((item, index) => (
-                        <View key={`${item.id}-${item.name}`} style={styles.productItemWrapper}>
-                            {renderProductItem({ item })}
-                        </View>
+                    {!loading && books.length === 0 && (
+                        <Text style={styles.noProductsText}>Không có sản phẩm</Text>
+                    )}
+                    {books.map((item) => (
+                        <ProductItem key={item.id} item={item} />
                     ))}
                 </View>
-                {search === '' && (
-                    <TouchableHighlight onPress={loadMore} style={styles.loadMoreButton}>
-                        <Text style={styles.loadMoreButtonText}>Load More</Text>
-                    </TouchableHighlight>
-                )}
+
             </ScrollView>
         </View>
     );
