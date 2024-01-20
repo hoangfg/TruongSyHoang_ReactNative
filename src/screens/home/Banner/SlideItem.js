@@ -12,6 +12,7 @@ import React from 'react';
 const { width, height } = Dimensions.get('screen');
 
 const SlideItem = ({ item }) => {
+
     const translateYImage = new Animated.Value(40);
 
     Animated.timing(translateYImage, {

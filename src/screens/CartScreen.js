@@ -4,8 +4,7 @@ import {
     Text,
     ScrollView,
     TouchableOpacity,
-    Image,
-    ToastAndroid, Modal,
+    Modal,
     Pressable,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -243,7 +242,7 @@ const CartUI = ({ navigation }) => {
                             color: COLOURS.white,
                             textTransform: 'uppercase',
                         }}>
-                        Thanh toán (${total})
+                        Thanh toán ({total ? total.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) : 0})
                     </Text>
                 </TouchableOpacity>
             </View>

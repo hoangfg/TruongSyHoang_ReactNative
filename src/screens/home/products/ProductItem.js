@@ -1,30 +1,51 @@
 import React, { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, Text, TouchableOpacity, Image } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import ListType from '../../../components/ListType';
-import { ImageBackground } from 'react-native';
-import { addToCart } from '../../../action/CartSlice';
-import Toast from 'react-native-toast-message';
-import { getImage } from '../../../api/ImageApi';
-import ProductItem from './ProductItem';
+import { View, ScrollView, StyleSheet, Text, TouchableOpacity, Image, ToastAndroid } from 'react-native';
 
-const ListProduct = ({ data }) => {
+import { getImage } from './../../../api/ImageApi';
+import Loading from '../../../components/Loading';
+
+import { useNavigation } from '@react-navigation/native';
+import ProductImage from './../../../components/ProductImage';
+import { addToCart } from '../../../action/CartSlice';
+const ProductItem = ({ item }) => {
 
     const navigation = useNavigation();
-    const navigateToProductList = () => {
-        navigation.navigate('ProductList');
+
+    const handleAddToCart = async (productId, quantity, price) => {
+        try {
+            await addToCart(productId, quantity, price);
+            ToastAndroid.show("Thêm vào giỏ hàng thành công", ToastAndroid.BOTTOM)
+        } catch (error) {
+            console.error('Error adding item to cart:', error);
+        }
     };
+
     return (
-        <View style={styles.container}>
-            <ListType title="Sản phẩm mới" onPress={navigateToProductList} />
-            <ScrollView horizontal>
-                {data?.map((item) => (
-                    <View key={item.id} style={styles.productItemWrapper}>
-                        <ProductItem item={item} />
-                    </View>
-                ))}
-            </ScrollView>
-        </View>
+        <TouchableOpacity
+            style={styles.productItem}
+            onPress={() => {
+                navigation.navigate('Details', { productId: item.id });
+            }}
+        >
+            <ProductImage items={item.images} />
+
+            <Text style={styles.productTitle} numberOfLines={2} ellipsizeMode='tail'>
+                {item.name}
+            </Text>
+
+            <View style={styles.priceBox}>
+                <Text style={styles.productPrice}>
+                    {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                </Text>
+
+            </View>
+            <TouchableOpacity
+                style={styles.addToCartButton}
+                onPress={() => handleAddToCart(item.id, 1, item.price)}
+            >
+                <Text style={styles.addToCartButtonText}>Thêm vào giỏ hàng</Text>
+            </TouchableOpacity>
+        </TouchableOpacity>
     );
 };
 
@@ -92,4 +113,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ListProduct;
+export default ProductItem;

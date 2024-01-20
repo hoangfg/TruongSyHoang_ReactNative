@@ -6,6 +6,8 @@ import ListCategory from './home/Category/ListCategory';
 import ListProduct from './home/products/ListProduct';
 import { listCategory } from '../api/Api';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getBooks, product } from '../api/ProductApi';
+import { getPublishers } from '../api/PublisherApi';
 
 
 
@@ -22,37 +24,39 @@ const HomeScreen = () => {
         { id: 3, image: require('../assets/b1.jpg') },
 
     ];
-    const [products, setProducts] = useState([]);
+
     const [categories, setCategories] = useState([]);
-    const getProducts = async () => {
-        try {
-            const response = await fetch('https://api.escuelajs.co/api/v1/products?offset=0&limit=10');
-            const data = await response.json();
 
-            setProducts(data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
-    const getCategories = async () => {
-        try {
-            const data = await listCategory();
 
-            setCategories(data);
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
+
+    const [books, setBooks] = useState([]);
+
     useEffect(() => {
-        getProducts();
+        const fetchData = async () => {
+            try {
+                const data = await getBooks();
+                setBooks(data.content);
+            } catch (error) {
+                console.error('Error fetching books:', error);
+            }
+        };
+        const getCategories = async () => {
+            try {
+                const data = await getPublishers();
+                setCategories(data.content);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
         getCategories();
+        fetchData();
     }, []);
 
     return (
         <ScrollView >
             <ListBanner data={bannerData} />
             <ListCategory data={categories} />
-            <ListProduct data={products} />
+            <ListProduct data={books} />
 
         </ScrollView>
     )

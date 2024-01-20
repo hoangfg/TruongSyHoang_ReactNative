@@ -7,44 +7,31 @@ import { category, categorySinge, listProductWithCategory } from '../api/Api';
 import { fetchProductById } from './../api/Api';
 import ListType from '../components/ListType';
 import Loading from '../components/Loading';
+import { getPublisher, getPublishersBooks } from '../api/PublisherApi';
+import CategoryItem from './home/Category/CategoryItem';
+import CategoryImage from './category/CategoryImage';
+import ProductItem from './home/products/ProductItem';
+
 
 const CategoryProducts = ({ route }) => {
-    const { categoryId } = route.params;
-
+    const { categoryId, categoryName } = route.params;
     const [products, setProducts] = useState([]);
     const [category, setCategory] = useState({})
     const [loading, setLoading] = useState(true);
-    const navigation = useNavigation();
-    useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const data = await listProductWithCategory(categoryId);
 
-                setTimeout(() => {
-                    setProducts(data);
-                    setLoading(false);
-                }, 200);
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const data = await getPublishersBooks(categoryId);
+                setProducts(data.content);
+                setLoading(false)
             } catch (error) {
-                console.error("Fetch error:", error);
-                setLoading(false);
+                console.error('Error fetching books:', error);
             }
         };
-        const fetchCategory = async () => {
-            try {
-                const data = await categorySinge(categoryId);
-                console.log(data)
-                setTimeout(() => {
-                    setCategory(data);
-                    setLoading(false);
-                }, 200);
-            } catch (error) {
-                console.error("Fetch error:", error);
-                setLoading(false);
-            }
-        }
-        fetchProducts();
-        fetchCategory();
+        fetchData();
     }, [categoryId]);
+
     if (loading) {
         return <Loading />
     }
@@ -52,59 +39,22 @@ const CategoryProducts = ({ route }) => {
     if (!products) {
         return <Loading />
     }
-    const renderProductItem = ({ item }) => {
-
-        return (
-            <TouchableOpacity
-                style={styles.productItem}
-                onPress={() => {
-                    navigation.navigate('Details', { productId: item.id });
-                }}
-            >
-                {/* <Image source={item.image} style={styles.productImage} /> */}
-                <ImageBackground
-                    source={{ uri: item.images[0] }}
-                    style={styles.productImage}
-                >
-
-                </ImageBackground>
-                <Text style={styles.productTitle}>{item.title}</Text>
-                <View style={styles.priceBox}>
-                    {item.priceSale ? (
-                        <>
-                            <Text style={styles.productPriceSale}>{item.priceSale} USD</Text>
-                            <Text style={styles.productPriceOriginal}>{item.price} USD</Text>
-                        </>
-                    ) : (
-                        <Text style={styles.productPrice}>{item.price} USD</Text>
-                    )}
-                </View>
-                <TouchableOpacity
-                    style={styles.addToCartButton}
-                    onPress={() => {
-                        console.log(`Thêm vào giỏ hàng: ${item.title}`);
-                        // Thực hiện hành động thêm vào giỏ hàng ở đây
-                    }}
-                >
-                    <Text style={styles.addToCartButtonText}>Thêm vào giỏ hàng</Text>
-                </TouchableOpacity>
-            </TouchableOpacity>
-        );
-    };
-
     return (
         <View style={styles.container}>
-            <ListType title={category.name} type="hiden" />
+            <ListType title={categoryName} type="hiden" />
             <ScrollView
                 contentContainerStyle={styles.container}
                 horizontal={false}
                 showsVerticalScrollIndicator={false}
             >
                 <View style={styles.rowContainer}>
+                    {!loading && products.length === 0 && (
+                        <Text style={styles.noProductsText}>Không có sản phẩm</Text>
+                    )}
                     {products.map((item) => (
                         <View key={item.id} style={styles.productItemWrapper}>
-
-                            {renderProductItem({ item })}
+                          
+                            <ProductItem item={item} />
                         </View>
                     ))}
                 </View>

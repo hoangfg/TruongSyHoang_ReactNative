@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, Text } from 'react-native';
 import FormInput from '../components/FormInput';
 import FormButton from '../components/FormButton';
-import { Title, Text } from 'react-native-paper';
-import { login, profile } from '../api/UserApi';
+import { Title } from 'react-native-paper';
 
-import HomeScreen from './HomeScreen';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { useAuth } from '../utils/AuthProvider';
-import Loading from '../components/Loading';
 import LoginLoading from '../components/LoginLoading';
+
+import { getUserProfile, login } from '../api/UserApi';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LoginScreen({ navigation }) {
     const { login: authLogin } = useAuth();
@@ -18,6 +18,8 @@ export default function LoginScreen({ navigation }) {
     const [password, setPassword] = useState('');
     const [seePassword, setSeePassword] = useState(true);
     const [checkValidEmail, setCheckValidEmail] = useState(false);
+    const [loginError, setLoginError] = useState('');
+
     const handleCheckEmail = text => {
         let re = /\S+@\S+\.\S+/;
         let regex = /^[\+]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,4}[-\s.]?[0-9]{4,9}$/im;
@@ -28,69 +30,65 @@ export default function LoginScreen({ navigation }) {
             setCheckValidEmail(true);
         }
     }
+
     const handleLogin = async () => {
         setLoading(true);
-        // console.log(AsyncStorage.getItem('access_token'))
-        // AsyncStorage.removeItem('access_token');
-        if (email && password) {
-            try {
-                const result = await login({
-                    email: email,
-                    password: password
-                });
+        setLoginError('');
 
-                if (result.status === 201) {
-                    AsyncStorage.setItem('access_token', result.data.access_token);
-                    const profileResult = await profile(result.data.access_token);
+        try {
+            const result = await login({
+                usernameOrEmail: email,
+                password: password
+            });
+            // AsyncStorage.removeItem('access_token');
+            await AsyncStorage.setItem('access_token', result.accessToken);
+            const userProfile = await getUserProfile();
+            console.log("userProfile", userProfile)
+            authLogin(userProfile);
+            navigation.navigate('HomeStack');
 
-                    if (profileResult.status === 200) {
+        } catch (error) {
+            // Xử lý lỗi
+            console.error("Login failed:", error);
 
-                        authLogin(profileResult.data);
-                        setLoading(false);
-                        navigation.navigate('HomeStack');
-                    } else {
-                        setLoading(false);
-                        console.error("Failed to fetch user profile:", profileResult.status);
-                        alert("An error occurred while fetching user profile. Please try again.");
-                    }
-                } else {
-                    setLoading(false);
-                    alert("Login failed. Please check your credentials.");
-                }
-            } catch (error) {
-                setLoading(false);
-                console.error("Login failed:", error);
-                alert("An error occurred during login. Please try again.");
-            }
-        } else {
+            // ... (Xử lý lỗi khác nếu cần)
+        } finally {
+
             setLoading(false);
-            alert("Please enter valid credentials");
         }
     }
     if (loading) {
-        return <LoginLoading />
+        return <LoginLoading />;
     }
+
     return (
         <View style={styles.container}>
             <Title style={styles.titleText}>Đăng nhập!</Title>
+
             <FormInput
                 labelName='Email'
                 value={email}
                 autoCapitalize='none'
                 onChangeText={(userEmail) => handleCheckEmail(userEmail)}
             />
+            {checkValidEmail && <Text style={styles.errorText}>Please enter a valid email address</Text>}
+
             <FormInput
                 labelName='Password'
                 value={password}
                 secureTextEntry={seePassword}
                 onChangeText={(userPassword) => setPassword(userPassword)}
             />
+
+            {loginError !== '' && <Text style={styles.errorText}>{loginError}</Text>}
+
             <FormButton
                 title='Đăng nhập'
                 modeValue='contained'
                 labelStyle={styles.loginButtonLabel}
                 onPress={handleLogin}
             />
+
             <FormButton
                 title='Đăng ký'
                 modeValue='text'
@@ -117,5 +115,11 @@ const styles = StyleSheet.create({
     },
     navButtonText: {
         fontSize: 16
+    },
+    errorText: {
+        color: 'red',
+        marginTop: 5,
+        marginBottom: 10,
+        textAlign: 'center'
     }
 });

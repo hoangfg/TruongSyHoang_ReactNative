@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, SafeAreaView, Image, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity } from 'react-native';
+import { View, SafeAreaView, Image, Text, StyleSheet, ScrollView, Dimensions, TouchableOpacity, ToastAndroid } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import COLORS from '../consts/colors';
 import QuantitySelector from '../components/QuantitySelector';
@@ -9,6 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 import Toast from 'react-native-toast-message';
 import { fetchProductById } from '../api/Api';
 import { addToCart } from '../action/CartSlice';
+import { getBook } from '../api/ProductApi';
+import DetailImage from './detail/DetailImage';
 
 
 
@@ -16,19 +18,19 @@ const { width } = Dimensions.get('window');
 const Details = ({ route }) => {
     const [product, setProduct] = useState({});
     const [loading, setLoading] = useState(true);
-    const navigation = useNavigation(); // Get the navigation object
+    const navigation = useNavigation();
     const { productId } = route.params;
+
+
 
 
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const data = await fetchProductById(productId);
 
-                setTimeout(() => {
-                    setProduct(data);
-                    setLoading(false);
-                }, 200);
+                const data = await getBook(productId);
+                setProduct(data);
+                setLoading(false);
             } catch (error) {
                 console.error("Fetch error:", error);
                 setLoading(false);
@@ -36,8 +38,9 @@ const Details = ({ route }) => {
         };
 
         fetchProduct();
-    }, [productId]);
 
+    }, [productId]);
+    console.log(product)
     const renderHeader = () => (
         <SafeAreaView style={style.header} forceInset={{ bottom: 'never' }}>
             <Icon name="arrow-back" size={28} onPress={() => navigation.goBack()} />
@@ -45,18 +48,7 @@ const Details = ({ route }) => {
         </SafeAreaView>
     );
 
-    const renderImageContainer = () => (
 
-        <View style={style.imageContainer} >
-
-            <Image
-                source={{ uri: product.images[0] }}
-                style={{ flex: 1, aspectRatio: 16 / 9, borderRadius: 8, resizeMode: 'contain' }}
-            />
-
-
-        </View >
-    );
 
     const renderDetailsContainer = () => (
         <View style={style.detailsContainer}>
@@ -76,42 +68,20 @@ const Details = ({ route }) => {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                 }}>
-                <Text style={{ fontSize: 22, fontWeight: 'bold', width: '75%', }}>{product.title}</Text>
+                <Text style={{ fontSize: 22, fontWeight: 'bold', width: '75%', }}>{product.name}</Text>
                 <View style={style.priceTag}>
 
-                    {product.priceSale ? (
-                        <>
-                            <Text
-                                style={{
 
-                                    color: COLORS.white,
-                                    fontWeight: 'bold',
-                                    fontSize: 16,
-                                }}>
-                                ${product.priceSale}
-                            </Text>
-                            <Text
-                                style={{
-                                    // marginLeft: 15,
-                                    color: COLORS.white,
-                                    fontWeight: 'bold',
-                                    fontSize: 16,
-                                    textDecorationLine: 'line-through'
-                                }}>
-                                ${product.price}
-                            </Text>
-                        </>
-                    ) : (
-                        <Text
-                            style={{
-                                marginLeft: 15,
-                                color: COLORS.white,
-                                fontWeight: 'bold',
-                                fontSize: 16,
-                            }}>
-                            ${product.price}
-                        </Text>
-                    )}
+                    <Text
+                        style={{
+                            marginLeft: 15,
+                            color: COLORS.white,
+                            fontWeight: 'bold',
+                            fontSize: 16,
+                        }}>
+                        {product.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                    </Text>
+
                 </View>
             </View>
             <View style={{ paddingHorizontal: 10, marginTop: 10 }}>
@@ -144,12 +114,7 @@ const Details = ({ route }) => {
     const handleAddToCart = async () => {
         try {
             await addToCart(product.id, 1, product.price); // Assuming you want to add one quantity each time
-            Toast.show({
-                type: 'success',
-                text1: 'ADD TO CART SUCCESS',
-                visibilityTime: 5000,
-                autoHide: true,
-            });
+            ToastAndroid.show("Thêm vào giỏ hàng thành công", ToastAndroid.BOTTOM)
 
         } catch (error) {
             console.error('Error adding item to cart:', error);
@@ -174,7 +139,8 @@ const Details = ({ route }) => {
                 >
                     <View>
 
-                        {renderImageContainer()}
+                        {/* {renderImageContainer()} */}
+                        <DetailImage items={product.images} />
                         {renderDetailsContainer()}
                     </View>
                 </SafeAreaView>
@@ -210,17 +176,7 @@ const style = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
     },
-    imageContainer: {
-        flex: 1,
-        marginTop: 50,
-    },
-    productImage: {
-        width: '100%',
-        height: "auto",
-        borderRadius: 8,
-        resizeMode: 'contain',
 
-    },
     detailsContainer: {
         flex: 0.55,
         backgroundColor: COLORS.light,
@@ -258,7 +214,7 @@ const style = StyleSheet.create({
     },
     priceTag: {
         backgroundColor: COLORS.red,
-        width: 80,
+        width: 120,
         height: 40,
         justifyContent: 'center',
         borderTopLeftRadius: 25,

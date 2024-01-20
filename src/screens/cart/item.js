@@ -9,6 +9,8 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Details from './../ProductDetailScreen';
 import Loading from '../../components/Loading';
 import { useNavigation } from '@react-navigation/native';
+import { getBook } from '../../api/ProductApi';
+import CartImage from './CartImage';
 
 const Item = ({ item, onDelete, onMinus, onPlus }) => {
     const [data, setData] = useState(null);
@@ -16,8 +18,7 @@ const Item = ({ item, onDelete, onMinus, onPlus }) => {
     useEffect(() => {
         const fetchProductDetails = async () => {
             try {
-                const fetchedProduct = await fetchProductById(item.productId);
-                console.log(fetchProductById)
+                const fetchedProduct = await getBook(item.productId);
                 setData(fetchedProduct);
             } catch (error) {
                 console.error('Error fetching product details:', error);
@@ -30,29 +31,7 @@ const Item = ({ item, onDelete, onMinus, onPlus }) => {
     if (!data) {
         return <Loading />
     }
-    const renderImageContainer = () => (
 
-        <View
-            style={{
-                width: '30%',
-                height: 100,
-                padding: 14,
-                justifyContent: 'center',
-                alignItems: 'center',
-                // backgroundColor: COLOURS.backgroundLight,
-                borderRadius: 10,
-                marginRight: 22,
-            }}>
-            <Image
-                source={{ uri: data.images[0] }}
-                style={{
-                    width: '100%',
-                    height: '100%',
-                    resizeMode: 'contain',
-                }}
-            />
-        </View>
-    );
     return (
         <View
             key={item.productId}
@@ -64,7 +43,8 @@ const Item = ({ item, onDelete, onMinus, onPlus }) => {
                 flexDirection: 'row',
                 alignItems: 'center',
             }}>
-            {renderImageContainer()}
+            {/* {renderImageContainer()} */}
+            <CartImage items={data.images} />
             <View
                 style={{
                     flex: 1,
@@ -80,7 +60,7 @@ const Item = ({ item, onDelete, onMinus, onPlus }) => {
                             fontWeight: '600',
                             letterSpacing: 1,
                         }}>
-                        {data.title}
+                        {data.name}
                     </Text>
                     <View
                         style={{
@@ -96,7 +76,7 @@ const Item = ({ item, onDelete, onMinus, onPlus }) => {
                                 maxWidth: '85%',
                                 marginRight: 4,
                             }}>
-                            ${data.price}
+                            {data.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
                         </Text>
 
                     </View>
