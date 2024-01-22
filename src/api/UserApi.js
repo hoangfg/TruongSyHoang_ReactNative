@@ -34,8 +34,7 @@ export const login = async (loginData) => {
 
     try {
         const response = await axios.post("http://192.168.38.236:8080/api/auth/login", loginData);
-        console.log("1", response)
-        // await AsyncStorage.setItem('access_token', response.data.accessToken);
+
 
         return response.data;
     } catch (error) {
@@ -48,8 +47,7 @@ export const register = async (registerData) => {
     console.log("register", registerData)
     try {
         const response = await ApiBase.post("/auth/register", registerData);
-        console.log("reponse", response)
-        console.log("reponse 2", response.data)
+
         return response.data;
     } catch (error) {
         // Handle error
