@@ -58,15 +58,17 @@ export default function Account() {
             <ScrollView contentContainerStyle={styles.container}>
 
 
-                {user && <View style={styles.profile}>
-                    <Image
-                        alt=""
-                        source={{
-                            uri: user?.avatar,
-                        }}
-                        style={styles.profileAvatar}
-                    />
+                {user && (<View style={styles.profile}>
 
+                    {user.avatar && (
+                        <Image
+                            alt={user?.name}
+                            source={{
+                                uri: user?.avatar,
+                            }}
+                            style={styles.profileAvatar}
+                        />
+                    )}
                     <Text style={styles.profileName}>{user?.name}</Text>
 
                     <Text style={styles.profileEmail}>{user?.email}</Text>
@@ -80,7 +82,7 @@ export default function Account() {
                             <FeatherIcon color="#fff" name="edit" size={16} />
                         </View>
                     </TouchableOpacity>
-                </View>
+                </View>)
                 }
 
                 {SECTIONS.map(({ header, items }) => (
